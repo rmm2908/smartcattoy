@@ -12,15 +12,15 @@ Armin Mühlfellner
 
 ## Must Have
 
+- Spherical Toy
+    - Moves around
+    - Can receive input via network
 - mobile App
-    - login to account
     - connect toy to mobile app
     - control toy remotely
     - provides autopilot mode
 - Back End
     - receive Data from App
-    - write Data to Database
-    - read Data from Database
     - send Data to Mobile app
 - Database
     - Store Data from Backend
@@ -35,6 +35,7 @@ Armin Mühlfellner
 - add tail to toy for more interaction
 - add sounds to toy
 - add camera feed to app
+- login (Database necessary)
 
 ## Technical Overview
 
