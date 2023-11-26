@@ -4,8 +4,10 @@ const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
   appName: 'cattoy',
   webDir: 'www',
-  server: {
-    androidScheme: 'https'
+  plugins: {
+    CapacitorHttp: {
+      enabled: true
+    }
   }
 };
 
