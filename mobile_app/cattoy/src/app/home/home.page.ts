@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CapacitorHttp } from '@capacitor/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+
 
 @Component({
   selector: 'app-home',
@@ -8,27 +10,42 @@ import { CapacitorHttp } from '@capacitor/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  myWebSocket: WebSocketSubject<any> = webSocket('ws://192.168.50.225:8000');
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+    this.myWebSocket.asObservable().subscribe(data => console.log(data));
+    this.myWebSocket.subscribe(    
+      msg => console.log('message received: ' + msg), 
+      // Called whenever there is a message from the server    
+      err => console.log(err), 
+      // Called if WebSocket API signals some kind of error    
+      () => console.log('complete') 
+      // Called when connection is closed (for whatever reason)  
+   );
+  }
 
   moveForward() {
     console.log("Forward Clicked");
-    this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 0, \"motor2PW\": 60, \"motor2D\": 0}");
+    this.myWebSocket.next({"motor1PW": 70, "motor1D": 0, "motor2PW": 70, "motor2D": 0});
+    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 0, \"motor2PW\": 60, \"motor2D\": 0}");
   };
 
   moveBackward() {
     console.log("Backward Clicked");
-    this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 1, \"motor2PW\": 60, \"motor2D\": 1}");
+    this.myWebSocket.next({"motor1PW": 70, "motor1D": 1, "motor2PW": 70, "motor2D": 1});
+    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 1, \"motor2PW\": 60, \"motor2D\": 1}");
   };
 
   moveLeft() {
     console.log("Left Clicked");
-    this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 0, \"motor2PW\": 60, \"motor2D\": 1}");
+    this.myWebSocket.next({"motor1PW": 60, "motor1D": 0, "motor2PW": 50, "motor2D": 1});
+    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 0, \"motor2PW\": 60, \"motor2D\": 1}");
   };
 
   moveRight() {
     console.log("Right Clicked");
-    this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 1, \"motor2PW\": 60, \"motor2D\": 0}");
+    this.myWebSocket.next({"motor1PW": 50, "motor1D": 1, "motor2PW": 60, "motor2D": 0});
+    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 1, \"motor2PW\": 60, \"motor2D\": 0}");
   };
 
   sendRequestToServer(command: String) {
@@ -59,5 +76,4 @@ export class HomePage {
       console.log(response)
     });
   }
-
 }
