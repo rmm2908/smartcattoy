@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/49a6fdde-9930-4228-8a85-589a1f25c3a1/resourceGroups/cattoy/providers/Microsoft.Web/sites/hackathoncattoy",
+    "appService.deploySubpath": "server\\cattoyserver"
+}

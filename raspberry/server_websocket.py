@@ -5,9 +5,9 @@ import serial
 
 
 #Serial Connection to Arduino
-ser = serial.Serial('/dev/ttyACM0', baudrate = 9600, timeout = 0.05)
+#ser = serial.Serial('/dev/ttyACM0', baudrate = 9600, timeout = 0.05)
 #ser = serial.Serial('COM3', baudrate = 9600, timeout = 0.05)
-ser.reset_input_buffer()
+#ser.reset_input_buffer()
 
 def findCommandInString(text):
     if "motor1PW" in text:
@@ -36,7 +36,7 @@ async def handler(websocket, path):
             if findCommandInString(message):
                 serialCommand = createMotorString(content_obj)
                 print("SerialCommand: " + serialCommand)
-                ser.write(str(serialCommand).encode("UTF-8"))
+                #ser.write(str(serialCommand).encode("UTF-8"))
  
 start_server = websockets.serve(handler, "localhost", 8000)
  
