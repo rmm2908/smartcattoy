@@ -39,12 +39,10 @@ Armin Mühlfellner
 
 ## Technical Overview
 
-Mobile App → Ionic Framework to develop webapp
+![Infrastructure Overview](https://git-iit.fh-joanneum.at/swd22-hackathon/smartcattoy/-/raw/main/images/Overview.png)  
 
-Back End → NodeJS, Express, Sequelize 
-
-Database system -> MS SQL
-
-Hardware on Toy -> Raspberry Pi, Arduino, Sensors + Motors
-
-Case for Toy -> Modelled and printed via 3D Printer
+The client application is developed using Ionic 7 with Angular and can be deployed to iOS, Android and the Web.
+The hardware toy is running a python script to receive data from the client and acts as the central inteligence hub of the hardware, housing the logic of the hardware and sends the commands over a Serial Interface to Arduino.
+Arduino just receives the commands from python script on the Raspberry Pi and controls all sensors and motors.
+Both the client application and the cattoy don't communicate directly to each other but to a server hosted on azure web application.
+It is a NodeJS Express application that acts as an intermediary to establish connection between those two devices using WebSockets to enable low latency.
