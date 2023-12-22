@@ -37,12 +37,29 @@ Armin Mühlfellner
 - add camera feed to app
 - login (Database necessary)
 
-## Technical Overview
+## Platform Overview
 
-![Infrastructure Overview](https://git-iit.fh-joanneum.at/swd22-hackathon/smartcattoy/-/raw/main/images/Overview.png)  
+![Platform Overview](https://git-iit.fh-joanneum.at/swd22-hackathon/smartcattoy/-/raw/main/images/Overview.png)  
 
 The client application is developed using Ionic 7 with Angular and can be deployed to iOS, Android and the Web.
+
 The hardware toy is running a python script to receive data from the client and acts as the central inteligence hub of the hardware, housing the logic of the hardware and sends the commands over a Serial Interface to Arduino.
+
 Arduino just receives the commands from python script on the Raspberry Pi and controls all sensors and motors.
+
 Both the client application and the cattoy don't communicate directly to each other but to a server hosted on azure web application.
+
 It is a NodeJS Express application that acts as an intermediary to establish connection between those two devices using WebSockets to enable low latency.
+
+
+
+## Hardware Overview
+
+![Hardware Overview](https://git-iit.fh-joanneum.at/swd22-hackathon/smartcattoy/-/raw/main/images/HardwareOverview.png)  
+
+A raspberry pi acts as the central logic hub, which is powered by a power bank.
+It is directly connected to an Arduino Uno over a USB Serial Connection to establish bidirectional communication.
+
+The Arudino receives all commands from the python script running on the raspberry to controll the motors attached to it. 
+As the communication is bidirectional, it could send sensor data back to the raspberry, if those should be added.
+
