@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CapacitorHttp } from '@capacitor/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-
 
 @Component({
   selector: 'app-home',
@@ -11,9 +8,13 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 })
 export class HomePage {
   myWebSocket: WebSocketSubject<any> = webSocket('wss://hackathoncattoy.azurewebsites.net');
+  directionValue: any = 50;
+  moveValue: any = 50;
+  maxSpeed = 70;
+  connectionState: boolean = false;
+  autopilotOn = false;
 
-  constructor(private httpClient: HttpClient) {
-    this.myWebSocket.asObservable().subscribe(data => console.log(data));
+  constructor() {
     /*this.myWebSocket.subscribe(    
       msg => console.log('message received: ' + msg), 
       // Called whenever there is a message from the server    
@@ -24,56 +25,96 @@ export class HomePage {
    );*/
   }
 
-  moveForward() {
-    console.log("Forward Clicked");
-    this.myWebSocket.next({"motor1PW": 60, "motor1D": 0, "motor2PW": 60, "motor2D": 0});
-    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 0, \"motor2PW\": 60, \"motor2D\": 0}");
-  };
+  startAutopilot() {
+    if(this.autopilotOn === false) {
+      console.log("Enabling Autopilot");
+      this.myWebSocket.next({ "motor1PW": 0, "motor1D": 0, "motor2PW": 0, "motor2D": 0, "autopilot": true });
+      return;
+    }
+    if(this.autopilotOn === true) {
+      console.log("Disabling Autopilot");
+      this.myWebSocket.next({ "motor1PW": 0, "motor1D": 0, "motor2PW": 0, "motor2D": 0, "autopilot": false });
+      return;
+    }
+  }
 
-  moveBackward() {
-    console.log("Backward Clicked");
-    this.myWebSocket.next({"motor1PW": 60, "motor1D": 1, "motor2PW": 60, "motor2D": 1});
-    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 1, \"motor2PW\": 60, \"motor2D\": 1}");
-  };
+  connectToServer() {
+    if(this.connectionState === true) {
+      console.log("Connection already established");
+      return;
+    }
 
-  moveLeft() {
-    console.log("Left Clicked");
-    this.myWebSocket.next({"motor1PW": 60, "motor1D": 0, "motor2PW": 60, "motor2D": 1});
-    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 0, \"motor2PW\": 60, \"motor2D\": 1}");
-  };
-
-  moveRight() {
-    console.log("Right Clicked");
-    this.myWebSocket.next({"motor1PW": 60, "motor1D": 1, "motor2PW": 60, "motor2D": 0});
-    //this.sendRequestToServer("{\"motor1PW\": 60, \"motor1D\": 1, \"motor2PW\": 60, \"motor2D\": 0}");
-  };
-
-  sendRequestToServer(command: String) {
-    /*const httpOptions = {
-      headers: new HttpHeaders({
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          'Content-Type': 'application/json; charset=utf-8'
-      })
-  };
-  
-    this.httpClient.post("https://192.168.50.225:9988", command, httpOptions).subscribe(response => {
-      console.log("Request Response: ", response);
-    });*/
-    const options = {
-      url: 'http://192.168.50.225:9988',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      data: command,
-    };
-
-    CapacitorHttp.post(options).then(response => {
-      console.log(response)
+    this.myWebSocket.asObservable().subscribe({
+      next: data => {console.log(data); this.connectionState = true},
+      error: error => { console.log(error); this.connectionState = false },
+      complete: () => { console.log("Connection Completed"); this.connectionState = false }
     });
+  }
+
+  updateSlider() {
+    if (this.moveValue > 50 || this.moveValue < 50) {
+      let powerLeft = this.moveValue > 50 ? this.moveValue - 50 : 50 - this.moveValue;
+      let powerRight = this.moveValue > 50 ? this.moveValue - 50 : 50 - this.moveValue;
+      let direction = this.moveValue > 50 ? 0 : 1;
+
+      if (this.directionValue > 50) {
+        let steering = this.directionValue - 50;
+        powerLeft = powerLeft + steering;
+        powerRight = powerRight - steering;
+        if (powerRight < 0) {
+          powerRight = 0;
+        }
+        if (powerLeft > 70) {
+          powerLeft = this.maxSpeed;
+        }
+        this.myWebSocket.next({ "motor1PW": powerLeft, "motor1D": direction, "motor2PW": powerRight, "motor2D": direction, "autopilot": false });
+        console.log('updateSlider:', { "motor1PW": powerLeft, "motor1D": direction, "motor2PW": powerRight, "motor2D": direction, "autopilot": false });
+        return;
+      }
+
+      if (this.directionValue < 50) {
+        let steering = 50 - this.directionValue;
+        powerLeft = powerLeft - steering;
+        powerRight = powerRight + steering;
+        if (powerLeft < 0) {
+          powerLeft = 0;
+        }
+        if (powerRight > 70) {
+          powerRight = this.maxSpeed;
+        }
+        this.myWebSocket.next({ "motor1PW": powerLeft, "motor1D": direction, "motor2PW": powerRight, "motor2D": direction, "autopilot": false });
+        console.log('updateSlider:', { "motor1PW": powerLeft, "motor1D": direction, "motor2PW": powerRight, "motor2D": direction, "autopilot": false });
+        return;
+      }
+      this.myWebSocket.next({ "motor1PW": powerLeft, "motor1D": direction, "motor2PW": powerRight, "motor2D": direction, "autopilot": false });
+      console.log('updateSlider:', { "motor1PW": powerLeft, "motor1D": direction, "motor2PW": powerRight, "motor2D": direction, "autopilot": false });
+      return;
+
+    }
+
+    if (this.directionValue > 50 || this.directionValue < 50) {
+      if (this.directionValue > 50) {
+        let power = this.directionValue - 50;
+        this.myWebSocket.next({ "motor1PW": power, "motor1D": 0, "motor2PW": power, "motor2D": 1, "autopilot": false });
+        console.log('updateSlider:', { "motor1PW": power, "motor1D": 0, "motor2PW": power, "motor2D": 1, "autopilot": false })
+        return;
+      }
+      if (this.directionValue < 50) {
+        let power = 50 - this.directionValue;
+        this.myWebSocket.next({ "motor1PW": power, "motor1D": 1, "motor2PW": power, "motor2D": 0, "autopilot": false });
+        console.log('updateSlider:', { "motor1PW": power, "motor1D": 1, "motor2PW": power, "motor2D": 0, "autopilot": false })
+        return;
+      }
+    }
+  }
+
+  releaseMoveSlider() {
+    console.log('releaseMoveSlider');
+    this.moveValue = 50;
+  }
+
+  releaseDirectionSlider() {
+    console.log('releaseDirectionSlider');
+    this.directionValue = 50;
   }
 }

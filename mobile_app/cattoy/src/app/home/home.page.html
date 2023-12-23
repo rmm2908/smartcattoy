@@ -1,8 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
+    <ion-title slot="start">
       Smart Cattoy
     </ion-title>
+    <ion-toggle slot="end" class="ion-margin" [(ngModel)]="connectionState" (click)="connectToServer()">Connection</ion-toggle>
+    <ion-toggle slot="end" class="ion-margin" [(ngModel)]="autopilotOn" (click)="startAutopilot()">Autopilot</ion-toggle>
   </ion-toolbar>
 </ion-header>
 
@@ -16,28 +18,16 @@
   <div id="container">
     <ion-grid>
       <ion-row>
-        <ion-col size="4"/>
-        <ion-col size="auto">
-          <ion-button (click)="moveForward()" size="large">Forward</ion-button>
+        <ion-col offset="1" size="3">
+          <input class="slider" type="range" [(ngModel)]="moveValue" min=-20 max=120 orient="vertical"
+            (input)="updateSlider()" (change)="releaseMoveSlider()" />
         </ion-col>
-        <ion-col size="4"/>
-      </ion-row>
-      <ion-row>
-        <ion-col size="3"/>
-        <ion-col size="auto">
-          <ion-button (click)="moveLeft()" size="large">Left</ion-button>
+        <ion-col size="1">
         </ion-col>
-        <ion-col size="auto">
-          <ion-button (click)="moveRight()" size="large">Right</ion-button>
+        <ion-col size="6">
+          <input class="slider" id="directionsSlider" type="range" [(ngModel)]="directionValue" min=-20 max=120
+            orient="horizontal" (input)="updateSlider()" (change)="releaseDirectionSlider()" />
         </ion-col>
-        <ion-col size="3"/>
-      </ion-row>
-      <ion-row>
-        <ion-col size="4"/>
-        <ion-col size="auto">
-          <ion-button (click)="moveBackward()" size="large">Backward</ion-button>
-        </ion-col>
-        <ion-col size="4"/>
       </ion-row>
     </ion-grid>
   </div>
