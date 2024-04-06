@@ -8,7 +8,7 @@ The idea behind this project is to provide a cheap alternative to expensive toys
 == Project Team
 
 Turpal-Ali Iliev
-Armin Mühlfellner
+
 
 == Must Have
 
