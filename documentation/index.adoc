@@ -1,4 +1,4 @@
-= SmartCatToy
+= SmartCatToy Startup
 
 
 … is a toy controlled via a webapp to entertain our feline friends during our absence.
