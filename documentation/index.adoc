@@ -1,0 +1,65 @@
+= SmartCatToy
+
+
+… is a toy controlled via a webapp to entertain our feline friends during our absence.
+
+The idea behind this project is to provide a cheap alternative to expensive toys, with which you can provide entertainment for lonley single cats in flats.
+
+== Project Team
+
+Turpal-Ali Iliev
+Armin Mühlfellner
+
+== Must Have
+
+- Spherical Toy
+    - Moves around
+    - Can receive input via network
+- mobile App
+    - connect toy to mobile app
+    - control toy remotely
+    - provides autopilot mode
+- Back End
+    - receive Data from App
+    - send Data to Mobile app
+- Database
+    - Store Data from Backend
+- Infrastructure
+    - Running nodejs
+    - Running database
+    - reachable via internet
+
+== Nice to Have
+
+- replace autopilot (random generator) via inteligent movement detection
+- add tail to toy for more interaction
+- add sounds to toy
+- add camera feed to app
+- login (Database necessary)
+
+== Platform Overview
+
+![Platform Overview](https://raw.githubusercontent.com/TheFiler/smartcattoy/main/images/Overview.png)  
+
+The client application is developed using Ionic 7 with Angular and can be deployed to iOS, Android and the Web.
+
+The hardware toy is running a python script to receive data from the client and acts as the central inteligence hub of the hardware, housing the logic of the hardware and sends the commands over a Serial Interface to Arduino.
+
+Arduino just receives the commands from python script on the Raspberry Pi and controls all sensors and motors.
+
+Both the client application and the cattoy don't communicate directly to each other but to a server hosted on azure web application.
+
+It is a NodeJS Express application that acts as an intermediary to establish connection between those two devices using WebSockets to enable low latency.
+
+
+
+== Hardware Overview
+
+![Hardware Overview](https://github.com/TheFiler/smartcattoy/blob/main/images/HardwareOverview.png)  
+
+A raspberry pi acts as the central logic hub, which is powered by a power bank.
+It is directly connected to an Arduino Uno over a USB Serial Connection to establish bidirectional communication.
+
+The Arudino receives all commands from the python script running on the raspberry to controll the motors attached to it. 
+As the communication is bidirectional, it could send sensor data back to the raspberry, if those should be added.
+
