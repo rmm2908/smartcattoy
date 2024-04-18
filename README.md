@@ -5,11 +5,6 @@
 
 The idea behind this project is to provide a cheap alternative to expensive toys, with which you can provide entertainment for lonley single cats in flats.
 
-## Project Team
-
-Turpal-Ali Iliev
-Armin Mühlfellner
-
 ## Must Have
 
 - Spherical Toy
