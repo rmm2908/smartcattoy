@@ -9,7 +9,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class HomePage {
   //wss://hackathoncattoy.azurewebsites.net -> URL für azure Server, deshalb auch wss statt ws (webSocketSecure)
-  myWebSocket: WebSocketSubject<any> = webSocket('wss://cattoytest.azurewebsites.net:8080');
+  myWebSocket: WebSocketSubject<any> = webSocket('ws://192.168.224.195:3000');
   directionValue: any = 50;
   moveValue: any = 50;
   maxSpeed = 70;
