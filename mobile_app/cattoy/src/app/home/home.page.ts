@@ -177,4 +177,7 @@ export class HomePage {
   
     await alert.present();
   }
+  sendStopAudio(){
+    this.myWebSocket.next({ "stop_audio": true });
+  }
 }
