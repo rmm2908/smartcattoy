@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AlertController } from '@ionic/angular';
+import videojs from 'video.js';
 
 @Component({
   selector: 'app-home',
@@ -9,12 +10,14 @@ import { AlertController } from '@ionic/angular';
 })
 export class HomePage {
   //wss://hackathoncattoy.azurewebsites.net -> URL für azure Server, deshalb auch wss statt ws (webSocketSecure)
-  myWebSocket: WebSocketSubject<any> = webSocket('ws://192.168.224.195:3000');
+  myWebSocket: WebSocketSubject<any> = webSocket('ws://localhost:3000');
   directionValue: any = 50;
   moveValue: any = 50;
   maxSpeed = 70;
   connectionState: boolean = false;
   autopilotOn = false;
+  streamOn = false;
+  streamPlayer: any;
   private file: File | null = null;
 
   constructor(public alertController: AlertController) {
@@ -27,6 +30,37 @@ export class HomePage {
       () => console.log('complete') 
       // Called when connection is closed (for whatever reason)  
    );*/
+  }
+
+  ngAfterViewInit() {
+    this.initializeStreamPlayer();
+  }
+
+  toggleStream() {
+    if(!this.streamPlayer) {
+      this.initializeStreamPlayer();
+    }
+    if(this.streamOn === false) {
+      if(this.streamPlayer) {
+        this.streamPlayer.src("http://192.168.178.90/bucket/test.m3u8")
+      }
+      this.streamPlayer.play();
+    }
+    if(this.streamOn === true) {
+      if(this.streamPlayer) {
+        this.streamPlayer.pause();
+      }
+    }
+  }
+
+  initializeStreamPlayer() {
+    this.streamPlayer = videojs("player", {
+      controls: false,
+      preload: 'none',
+      fill: true
+    }, () => {
+      console.log("player ready")
+    });
   }
 
   startAutopilot() {
