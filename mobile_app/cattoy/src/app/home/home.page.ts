@@ -42,7 +42,7 @@ export class HomePage {
     }
     if(this.streamOn === false) {
       if(this.streamPlayer) {
-        this.streamPlayer.src("http://192.168.178.90/bucket/test.m3u8")
+        this.streamPlayer.src("http://mattl02.com/bucket/test.m3u8")
       }
       this.streamPlayer.play();
     }
