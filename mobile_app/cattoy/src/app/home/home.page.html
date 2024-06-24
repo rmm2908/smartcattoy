@@ -16,18 +16,21 @@
     </ion-toolbar>
   </ion-header>
 
+  <div id="stream" [hidden]="!this.streamOn"><video id="player" class="video-js">
+    <source src="http://mattl02.com/bucket/stream.m3u8" type="application/x-mpegURL">
+  </video></div>
+
   <div id="container">
     <ion-grid>
       <ion-row>
-        <ion-col offset="1" size="3">
+        <ion-col offset="1" size="1">
           <input class="slider" type="range" [(ngModel)]="moveValue" min=-20 max=120 orient="vertical"
             (input)="updateSlider()" (change)="releaseMoveSlider()" />
         </ion-col>
-        <ion-col size="2">
-          <video id="player" class="video-js">
-            <source src="http://192.168.178.90/bucket/test.m3u8" type="application/x-mpegURL">
-          </video>
-        </ion-col>
+        <ion-col size="1"></ion-col>
+        <!-- <ion-col size="2">
+          
+        </ion-col> -->
         <ion-col size="6">
           <input class="slider" id="directionsSlider" type="range" [(ngModel)]="directionValue" min=-20 max=120
             orient="horizontal" (input)="updateSlider()" (change)="releaseDirectionSlider()" />
