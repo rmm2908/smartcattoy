@@ -26,6 +26,16 @@
   text-decoration: none;
 }
 
+#stream {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#player {
+  transform: rotate(180deg); 
+}
+
 input[type=range][orient=vertical] {
   appearance: slider-vertical;
   margin-top: 25px;
