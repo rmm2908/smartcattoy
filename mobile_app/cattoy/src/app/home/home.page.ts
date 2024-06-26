@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AlertController } from '@ionic/angular';
 import videojs from 'video.js';
+import * as nipplejs from 'nipplejs';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   //wss://hackathoncattoy.azurewebsites.net -> URL für azure Server, deshalb auch wss statt ws (webSocketSecure)
   myWebSocket: WebSocketSubject<any> = webSocket('ws://192.168.224.195:3000');
   directionValue: any = 50;
@@ -19,6 +20,9 @@ export class HomePage {
   streamOn = false;
   streamPlayer: any;
   private file: File | null = null;
+  joystickHorizontal: any;
+  joystickVertical: any;
+
 
   constructor(public alertController: AlertController) {
     /*this.myWebSocket.
@@ -30,6 +34,88 @@ export class HomePage {
       () => console.log('complete') 
       // Called when connection is closed (for whatever reason)  
    );*/
+  }
+
+  @ViewChild('joystickHorizontal', { static: true }) joystickHorizontalContainer!: ElementRef;
+  @ViewChild('joystickVertical', { static: true }) joystickVerticalContainer!: ElementRef;
+
+
+
+  ngOnInit() {
+    this.initJoysticks();
+  }
+
+// This function assumes that inputY varies from 0 at the top to 2*maxDistance at the bottom
+scaleValue(inputY: number, maxDistance: number, minOutput: number, maxOutput: number): number {
+  // Normalize the input Y to range from 0 (top) to 1 (bottom)
+  let normalizedInput = 1 - inputY / (2 * maxDistance);
+  // Scale the normalized input to the output range
+  return normalizedInput * (maxOutput - minOutput) + minOutput;
+}
+
+// This function assumes that inputX varies from 0 at the left to 2*maxDistance at the right
+scaleValueX(inputX: number, maxDistance: number, minOutput: number, maxOutput: number): number {
+  // Normalize the input X to range from 0 at the left (joystick pushed left) to 1 at the right (joystick pushed right)
+  let normalizedInput = inputX / (2 * maxDistance);
+  // Scale the normalized input to the output range
+  return normalizedInput * (maxOutput - minOutput) + minOutput;
+}
+
+  initJoysticks() {
+    // Horizontal joystick
+    this.joystickHorizontal = nipplejs.create({
+      zone: this.joystickHorizontalContainer.nativeElement,
+      mode: 'static',
+      position: { left: '25%', top: '80%' },
+      color: 'blue',
+      restOpacity: 1,
+      lockX: true, // Lock movement along the X axis
+    });
+
+    this.joystickHorizontal.on('move', (evt: any, data: any) => {
+      // Assuming maxDistance is the maximum X displacement from the center to the left or right
+      const maxDistance = 50; // Adjust according to your setup
+      // Calculate the current X position of the joystick handle relative to its center at rest
+      let currentX = data.position.x - this.joystickHorizontal[0].position.x;
+      // Use the scaling function to determine the slider value
+      this.directionValue = this.scaleValueX(currentX + maxDistance, maxDistance, -20, 120); // Adjust slider range as needed
+      console.log("Horizontal movement, directionValue:", this.directionValue);
+      this.updateSlider();
+    });
+
+    // Vertical joystick
+    this.joystickVertical = nipplejs.create({
+      zone: this.joystickVerticalContainer.nativeElement,
+      mode: 'static',
+      position: { left: '75%', top: '80%' },
+      color: 'blue',
+      restOpacity: 1,
+      lockY: true, // Lock movement along the Y axis
+    });
+
+    this.joystickVertical.on('move', (evt: any, data: any) => {
+      // Assuming maxDistance is the maximum Y displacement from the center to the top or bottom
+      const maxDistance = 50; // Adjust according to your setup
+      // Calculate the current Y position of the joystick handle relative to its center at rest
+      let currentY = data.position.y - this.joystickVertical[0].position.y;
+      // Use the scaling function to determine the slider value
+      this.moveValue = this.scaleValue(currentY + maxDistance, maxDistance, -20, 120); // Adjust slider range as needed
+      console.log("Vertical movement: ", data.distance);
+      this.updateSlider();
+    });
+
+    this.joystickHorizontal.on('end', () => {
+      this.directionValue = 50; // Reset horizontal slider value to its neutral position
+      console.log("Horizontal joystick released. Slider reset to neutral.");
+      this.updateSlider();
+    });
+    
+    this.joystickVertical.on('end', () => {
+      this.moveValue = 50; // Reset vertical slider value to its neutral position
+      console.log("Vertical joystick released. Slider reset to neutral.");
+      this.updateSlider();
+    });
+    
   }
 
   ngAfterViewInit() {
