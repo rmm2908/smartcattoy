@@ -16,40 +16,47 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="stream" [hidden]="!this.streamOn"><video id="player" class="video-js">
-    <source src="http://mattl02.com/bucket/stream.m3u8" type="application/x-mpegURL">
-  </video></div>
-
-  <div id="container">
-    <ion-grid>
-      <ion-row>
-        <ion-col offset="1" size="1">
-          <input class="slider" type="range" [(ngModel)]="moveValue" min=-20 max=120 orient="vertical"
-            (input)="updateSlider()" (change)="releaseMoveSlider()" />
-        </ion-col>
-        <ion-col size="1"></ion-col>
-        <!-- <ion-col size="2">
-          
-        </ion-col> -->
-        <ion-col size="6">
-          <input class="slider" id="directionsSlider" type="range" [(ngModel)]="directionValue" min=-20 max=120
-            orient="horizontal" (input)="updateSlider()" (change)="releaseDirectionSlider()" />
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="12">
-          <ion-button (click)="sendStaticAudio('truck_honk.mp3')">Play Sound 1</ion-button>
-          <ion-button (click)="sendStaticAudio('car_honk.mp3')">Play Sound 2</ion-button>
-          <ion-button (click)="sendStaticAudio('cashier_sound.mp3')">Play Sound 3</ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="12">
-          <input type="file" accept=".mp3, .ogg, .wav" (change)="handleFileInput($event)">
-          <ion-button (click)="sendFile()">Upload File</ion-button>
-          <ion-button (click)="sendStopAudio()">Stop sound</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <div id="stream" [hidden]="!this.streamOn" style="padding-bottom: 100px;">
+    <video id="player" class="video-js">
+      <source src="http://mattl02.com/bucket/stream.m3u8" type="application/x-mpegURL">
+    </video>
   </div>
+  <ion-row style="position: absolute; bottom: 0; width: 100%; padding-bottom: 250px;">
+    <ion-col offset="6" size="6">
+        <div #joystickVertical class="joystickVer"></div>
+    </ion-col>
+    
+    <ion-col size="6">
+        <div #joystickHorizontal class="joystickHor"></div>
+    </ion-col>
+  </ion-row>
 </ion-content>
+
+
+<ion-footer>
+<ion-toolbar>
+    <ion-row>
+      <ion-col size="4">
+        <ion-button expand="block" (click)="sendStaticAudio('truck_honk.mp3')">Play Sound 1</ion-button>
+      </ion-col>
+      <ion-col size="4">
+        <ion-button expand="block" (click)="sendStaticAudio('car_honk.mp3')">Play Sound 2</ion-button>
+      </ion-col>
+      <ion-col size="4">
+        <ion-button expand="block" (click)="sendStaticAudio('cashier_sound.mp3')">Play Sound 3</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <input type="file" accept=".mp3, .ogg, .wav" (change)="handleFileInput($event)">
+      </ion-col>
+      <ion-col size="3">
+        <ion-button expand="block" (click)="sendFile()">Upload File</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button expand="block" (click)="sendStopAudio()">Stop Sound</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+
+</ion-footer>
