@@ -62,7 +62,4 @@ jobs:
           app-name: 'hackathoncattoy'
           slot-name: 'Production'
           package: .
-
-      - name: "Run the webapp"
-        run: npm run start
           
