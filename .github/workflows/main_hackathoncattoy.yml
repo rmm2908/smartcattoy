@@ -64,5 +64,5 @@ jobs:
         with:
           app-name: 'hackathoncattoy'
           slot-name: 'Production'
-          package: ./server/cattoyserver
+          package: .
           
