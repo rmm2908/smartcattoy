@@ -28,13 +28,13 @@ jobs:
         working-directory: ./server/cattoyserver
 
       - name: Zip artifact for deployment
-        run: zip ./server/cattoyserver/release.zip ./* -r
+        run: zip release.zip ./server/cattoyserver/* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: ./server/cattoyserver/release.zip
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
