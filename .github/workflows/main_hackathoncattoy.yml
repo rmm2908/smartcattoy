@@ -3,10 +3,6 @@
 
 name: Build and deploy Node.js app to Azure Web App - hackathoncattoy
 
-defaults:
-  run:
-    working-directory: ./server/cattoyserver
-
 on:
   push:
     branches:
@@ -29,6 +25,7 @@ jobs:
         run: |
           npm install
           npm run build --if-present
+        working-directory: ./server/cattoyserver
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -65,4 +62,7 @@ jobs:
           app-name: 'hackathoncattoy'
           slot-name: 'Production'
           package: .
+
+      - name: "Run the webapp"
+        run: npm run start
           
