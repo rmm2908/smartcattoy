@@ -7,4 +7,4 @@ It is important that the video file can be accessed directly via URL (also consi
 * ### Video ressource for streaming
     A video file in the correct format (default: m3u8) can be served through the web server to the app. SmartCatToy does this by sending the camera feed to the server using UDP. The server then converts the incoming UDP stream to the required video format.
 ### Example using nginx and ffmpeg
-Instructions for setting up such a environment can be found [here](/example_nginx_ffmpeg.md).
+Instructions for setting up such a environment can be found [here](example_nginx_ffmpeg.md).
